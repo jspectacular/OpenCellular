@@ -56,6 +56,10 @@ CFLAGS += -I$(TIVAWARE_DIR)
 LD = $(TOOLCHAIN)/bin/arm-none-eabi-gcc
 LFLAGS = -nostartfiles -static -Wl,--gc-sections -Wl,-T,../OC_CONNECT1.cmd -Wl,-T,$(CONFIG)/linker.cmd
 
+ALL_FILE = $(shell find . -name '*.c' -o -name '*.h')
+LINT = clang-format
+LINT_FLAGS = -i -style=file -fallback-style=none
+
 .PRECIOUS: %/compiler.opt %/linker.cmd
 
 all: main.out
@@ -71,6 +75,9 @@ all: main.out
 
 %.out: $(CONFIG)/linker.cmd $(MAIN_OBJS)
 	$(LD) $(LFLAGS) -o $@ $(MAIN_OBJS)
+
+lint:
+	$(LINT) $(LINT_FLAGS) $(ALL_FILE)
 
 clean:
 	-rm -rf *.o *.out *.d *.rov.xs $(CONFIG) $(MAIN_OBJS)
